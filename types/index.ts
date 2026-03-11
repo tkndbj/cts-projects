@@ -2,6 +2,7 @@ export interface Project {
     id: string;
     name: string;
     createdAt: Date;
+    createdBy?: string;
   }
   
   export interface ItemField {

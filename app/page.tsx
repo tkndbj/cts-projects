@@ -127,7 +127,7 @@ export default function Home() {
   if (splashVisible) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center bg-white"
+        className="h-screen flex flex-col items-center justify-center bg-white overflow-hidden"
         style={{
           opacity: splashFading ? 0 : 1,
           transition: "opacity 0.6s ease",
@@ -158,10 +158,10 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
 
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 shrink-0">
         <div className="flex items-center gap-6 px-8 h-14 overflow-x-auto">
           {projects.map((project) => (
             <button

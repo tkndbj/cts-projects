@@ -119,30 +119,44 @@ export default function EditItem() {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 font-[family-name:var(--font-montserrat)]">
+        <svg className="animate-spin h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-2xl mx-auto">
-
-        <div className="mb-8">
-          <button onClick={() => router.back()} className="text-sm text-gray-500 hover:text-black mb-1">
-            ← Geri
+    <div className="min-h-screen bg-gray-50 font-[family-name:var(--font-montserrat)]">
+      {/* Top bar */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-2xl mx-auto px-6 h-14 flex items-center">
+          <button
+            onClick={() => router.back()}
+            className="text-[11px] text-gray-400 hover:text-gray-600 uppercase tracking-widest transition-colors"
+          >
+            &larr; Geri
           </button>
-          <h1 className="text-2xl font-bold">Öğeyi Düzenle</h1>
         </div>
+      </header>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <div className="max-w-2xl mx-auto px-6 py-8">
+        <h1 className="text-lg font-semibold tracking-tight text-gray-900 mb-8">Öğeyi Düzenle</h1>
 
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           {fields.map((field, index) => (
-            <div key={index} className="bg-white p-5 rounded-lg shadow-sm flex flex-col gap-3">
+            <div key={index} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-4">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-gray-500">Alan {index + 1}</span>
+                <span className="text-[11px] font-medium text-gray-400 uppercase tracking-widest">Alan {index + 1}</span>
                 {fields.length > 1 && (
                   <button
                     type="button"
                     onClick={() => handleRemoveField(index)}
-                    className="text-red-400 hover:text-red-600 text-sm"
+                    className="text-[11px] text-gray-300 hover:text-red-400 uppercase tracking-widest transition-colors"
                   >
                     Kaldır
                   </button>
@@ -154,7 +168,7 @@ export default function EditItem() {
                 placeholder="Başlık"
                 value={field.title}
                 onChange={(e) => handleFieldChange(index, "title", e.target.value)}
-                className="border p-3 rounded-lg w-full"
+                className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-gray-400 transition-colors placeholder:text-gray-300"
                 required
               />
 
@@ -162,15 +176,14 @@ export default function EditItem() {
                 placeholder="Açıklama"
                 value={field.description}
                 onChange={(e) => handleFieldChange(index, "description", e.target.value)}
-                className="border p-3 rounded-lg w-full h-28 resize-none"
+                className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-gray-400 transition-colors placeholder:text-gray-300 h-28 resize-none"
                 required
               />
 
-              {/* Images */}
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Görseller</span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-[11px] font-medium text-gray-400 uppercase tracking-widest">Görseller</span>
+                  <span className="text-[11px] text-gray-300">
                     {field.existingImages.length + field.newImageFiles.length}/10
                   </span>
                 </div>
@@ -179,14 +192,14 @@ export default function EditItem() {
                 {field.existingImages.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {field.existingImages.map((url) => (
-                      <div key={url} className="relative">
-                        <img src={url} alt="Görsel" className="w-24 h-24 object-cover rounded-lg" />
+                      <div key={url} className="relative group">
+                        <img src={url} alt="Görsel" className="w-20 h-20 object-cover rounded-lg" />
                         <button
                           type="button"
                           onClick={() => handleRemoveExistingImage(index, url)}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-black text-white rounded-full text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                         >
-                          ×
+                          &times;
                         </button>
                       </div>
                     ))}
@@ -197,14 +210,14 @@ export default function EditItem() {
                 {field.newImageFiles.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {field.newImageFiles.map((file, imgIndex) => (
-                      <div key={imgIndex} className="relative">
-                        <img src={URL.createObjectURL(file)} alt={`Yeni ${imgIndex + 1}`} className="w-24 h-24 object-cover rounded-lg" />
+                      <div key={imgIndex} className="relative group">
+                        <img src={URL.createObjectURL(file)} alt={`Yeni ${imgIndex + 1}`} className="w-20 h-20 object-cover rounded-lg" />
                         <button
                           type="button"
                           onClick={() => handleRemoveNewImage(index, imgIndex)}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-black text-white rounded-full text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                         >
-                          ×
+                          &times;
                         </button>
                       </div>
                     ))}
@@ -212,13 +225,16 @@ export default function EditItem() {
                 )}
 
                 {field.existingImages.length + field.newImageFiles.length < 10 && (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={(e) => handleImageChange(index, e)}
-                    className="border p-3 rounded-lg w-full text-sm"
-                  />
+                  <label className="flex items-center justify-center w-full py-3 border border-dashed border-gray-200 rounded-xl text-xs text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors cursor-pointer">
+                    <span>Görsel seç...</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => handleImageChange(index, e)}
+                      className="hidden"
+                    />
+                  </label>
                 )}
               </div>
             </div>
@@ -228,18 +244,18 @@ export default function EditItem() {
             <button
               type="button"
               onClick={handleAddField}
-              className="border-2 border-dashed border-gray-300 text-gray-500 hover:border-black hover:text-black rounded-lg p-3 text-sm transition-colors"
+              className="border border-dashed border-gray-200 text-gray-400 hover:border-gray-400 hover:text-gray-600 rounded-xl py-3 text-xs uppercase tracking-widest transition-colors"
             >
               + Yeni Alan Ekle
             </button>
           )}
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-red-400 text-xs">{error}</p>}
 
           <button
             type="submit"
             disabled={saving}
-            className="bg-black text-white p-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
+            className="w-full py-3 text-xs font-semibold uppercase tracking-widest bg-black text-white rounded-xl hover:bg-gray-800 disabled:opacity-40 transition-colors"
           >
             {saving ? "Kaydediliyor..." : "Güncelle"}
           </button>

@@ -28,34 +28,44 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Yönetici Girişi</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 font-[family-name:var(--font-montserrat)]">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-10">
+          <h1 className="text-xl font-semibold tracking-tight text-gray-900">Yönetici Girişi</h1>
+          <p className="text-xs text-gray-400 mt-1 tracking-wide">Devam etmek için giriş yapın</p>
+        </div>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <input
-            type="email"
-            placeholder="E-posta"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border p-3 rounded-lg w-full"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Şifre"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-3 rounded-lg w-full"
-            required
-          />
+          <div>
+            <label className="block text-[11px] font-medium text-gray-400 uppercase tracking-widest mb-2">E-posta</label>
+            <input
+              type="email"
+              placeholder="ornek@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 text-sm bg-white border border-gray-200 rounded-xl outline-none focus:border-gray-400 transition-colors placeholder:text-gray-300"
+              required
+            />
+          </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <div>
+            <label className="block text-[11px] font-medium text-gray-400 uppercase tracking-widest mb-2">Şifre</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 text-sm bg-white border border-gray-200 rounded-xl outline-none focus:border-gray-400 transition-colors placeholder:text-gray-300"
+              required
+            />
+          </div>
+
+          {error && <p className="text-red-400 text-xs">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="bg-black text-white p-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
+            className="mt-2 w-full py-3 text-xs font-semibold uppercase tracking-widest bg-black text-white rounded-xl hover:bg-gray-800 disabled:opacity-40 transition-colors"
           >
             {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
           </button>
