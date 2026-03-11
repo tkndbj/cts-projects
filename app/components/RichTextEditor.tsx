@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Color from "@tiptap/extension-color";
 import { TextStyle } from "@tiptap/extension-text-style";
@@ -18,7 +18,7 @@ const COLORS = [
   "#ea580c", "#ca8a04", "#16a34a", "#2563eb", "#7c3aed",
 ];
 
-function Toolbar({ editor }: { editor: ReturnType<typeof useEditor> }) {
+function Toolbar({ editor }: { editor: Editor | null }) {
   if (!editor) return null;
 
   const btnBase =
