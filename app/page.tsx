@@ -142,6 +142,7 @@ export default function Home() {
       <div
         className="h-screen flex flex-col items-center justify-center bg-white overflow-hidden"
         style={{
+          position: "fixed", inset: 0, zIndex: 50,
           opacity: splashFading ? 0 : 1,
           transition: "opacity 0.6s ease",
         }}
@@ -172,6 +173,7 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
+      <style>{`html, body { overflow: hidden; }`}</style>
 
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 shrink-0">
