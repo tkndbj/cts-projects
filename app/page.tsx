@@ -9,6 +9,7 @@ interface FlatField {
   title: string;
   description: string;
   images: string[];
+  videoUrl?: string;
 }
 
 export default function Home() {
@@ -53,6 +54,7 @@ export default function Home() {
               title: field.title,
               description: field.description,
               images: field.images || [],
+              videoUrl: field.videoUrl || "",
             });
           }
         }
@@ -255,99 +257,126 @@ export default function Home() {
             ) : (
               <div className="relative w-full h-full">
 
-                {/* Full size image */}
-                {selectedField.images.length > 0 ? (
-                  <div className="relative w-full h-full">
-                    {imageLoading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
-                        <svg
-                          className="animate-spin h-10 w-10 text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                      </div>
-                    )}
-                    <img
-                      key={`${selectedField.title}-${selectedImageIndex}`}
-                      src={selectedField.images[selectedImageIndex]}
-                      alt="Görsel"
-                      className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoading ? "opacity-0" : "opacity-100"}`}
-                      onLoad={() => setImageLoading(false)}
+                {/* Video content */}
+                {selectedField.videoUrl ? (
+                  <div className="relative w-full h-full flex items-center justify-center bg-black">
+                    <video
+                      key={selectedField.videoUrl}
+                      src={selectedField.videoUrl}
+                      controls
+                      className="w-full h-full object-contain"
                     />
-                  </div>
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
-                    Görsel yok
-                  </div>
-                )}
-
-                {/* Thumbnail strip - bottom left */}
-                {selectedField.images.length > 1 && (
-                  <div className="absolute bottom-6 left-6 flex gap-2 max-w-xs overflow-hidden p-1">
-                    {selectedField.images.map((url, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleImageIndexChange(index)}
-                        className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 ring-offset-1 transition-all ${
-                          selectedImageIndex === index ? "ring-white opacity-100" : "ring-transparent opacity-60 hover:opacity-100"
-                        }`}
-                      >
-                        <img src={url} alt={`Görsel ${index + 1}`} className="w-full h-full object-cover" />
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Animated text overlay - bottom right */}
-                <div
-                  className="absolute bottom-6 right-6 max-w-md font-[family-name:var(--font-montserrat)]"
-                  style={{
-                    opacity: textVisible ? 1 : 0,
-                    transform: textVisible ? "translateY(0)" : "translateY(16px)",
-                    transition: "opacity 0.5s ease, transform 0.5s ease",
-                    maxHeight: "calc(100% - 48px)",
-                  }}
-                >
-                  <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/40 overflow-hidden flex flex-col" style={{ maxHeight: "calc(100vh - 120px)" }}>
-                    <button
-                      onClick={() => setInfoCollapsed((prev) => !prev)}
-                      className="w-full flex items-center justify-between px-6 py-4 hover:bg-white/40 transition-colors duration-200 shrink-0"
-                    >
-                      <h2 className="text-base font-semibold tracking-wide text-gray-900">{selectedField.title}</h2>
-                      <svg
-                        className="w-4 h-4 text-gray-400 shrink-0 ml-3 transition-transform duration-300"
-                        style={{ transform: infoCollapsed ? "rotate(0deg)" : "rotate(180deg)" }}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
+                    {/* Title overlay for video */}
                     <div
-                      className="transition-all duration-300 ease-in-out"
+                      className="absolute top-6 left-6 font-[family-name:var(--font-montserrat)]"
                       style={{
-                        display: "grid",
-                        gridTemplateRows: infoCollapsed ? "0fr" : "1fr",
-                        opacity: infoCollapsed ? 0 : 1,
+                        opacity: textVisible ? 1 : 0,
+                        transform: textVisible ? "translateY(0)" : "translateY(-8px)",
+                        transition: "opacity 0.5s ease, transform 0.5s ease",
                       }}
                     >
-                      <div className="overflow-hidden">
-                        <div className="px-6 pb-5 border-t border-gray-200/40 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
-                          <div
-                            className="text-gray-900 text-sm leading-relaxed pt-3 prose prose-sm max-w-none [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-4 [&_ol]:pl-4"
-                            dangerouslySetInnerHTML={{ __html: selectedField.description }}
-                          />
-                        </div>
+                      <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/40 px-5 py-3">
+                        <h2 className="text-sm font-semibold tracking-wide text-gray-900">{selectedField.title}</h2>
                       </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <>
+                    {/* Full size image */}
+                    {selectedField.images.length > 0 ? (
+                      <div className="relative w-full h-full">
+                        {imageLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+                            <svg
+                              className="animate-spin h-10 w-10 text-gray-400"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                            </svg>
+                          </div>
+                        )}
+                        <img
+                          key={`${selectedField.title}-${selectedImageIndex}`}
+                          src={selectedField.images[selectedImageIndex]}
+                          alt="Görsel"
+                          className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoading ? "opacity-0" : "opacity-100"}`}
+                          onLoad={() => setImageLoading(false)}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                        Görsel yok
+                      </div>
+                    )}
+
+                    {/* Thumbnail strip - bottom left */}
+                    {selectedField.images.length > 1 && (
+                      <div className="absolute bottom-6 left-6 flex gap-2 max-w-xs overflow-hidden p-1">
+                        {selectedField.images.map((url, index) => (
+                          <button
+                            key={index}
+                            onClick={() => handleImageIndexChange(index)}
+                            className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 ring-offset-1 transition-all ${
+                              selectedImageIndex === index ? "ring-white opacity-100" : "ring-transparent opacity-60 hover:opacity-100"
+                            }`}
+                          >
+                            <img src={url} alt={`Görsel ${index + 1}`} className="w-full h-full object-cover" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Animated text overlay - bottom right */}
+                    <div
+                      className="absolute bottom-6 right-6 max-w-md font-[family-name:var(--font-montserrat)]"
+                      style={{
+                        opacity: textVisible ? 1 : 0,
+                        transform: textVisible ? "translateY(0)" : "translateY(16px)",
+                        transition: "opacity 0.5s ease, transform 0.5s ease",
+                        maxHeight: "calc(100% - 48px)",
+                      }}
+                    >
+                      <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/40 overflow-hidden flex flex-col" style={{ maxHeight: "calc(100vh - 120px)" }}>
+                        <button
+                          onClick={() => setInfoCollapsed((prev) => !prev)}
+                          className="w-full flex items-center justify-between px-6 py-4 hover:bg-white/40 transition-colors duration-200 shrink-0"
+                        >
+                          <h2 className="text-base font-semibold tracking-wide text-gray-900">{selectedField.title}</h2>
+                          <svg
+                            className="w-4 h-4 text-gray-400 shrink-0 ml-3 transition-transform duration-300"
+                            style={{ transform: infoCollapsed ? "rotate(0deg)" : "rotate(180deg)" }}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        <div
+                          className="transition-all duration-300 ease-in-out"
+                          style={{
+                            display: "grid",
+                            gridTemplateRows: infoCollapsed ? "0fr" : "1fr",
+                            opacity: infoCollapsed ? 0 : 1,
+                          }}
+                        >
+                          <div className="overflow-hidden">
+                            <div className="px-6 pb-5 border-t border-gray-200/40 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
+                              <div
+                                className="text-gray-900 text-sm leading-relaxed pt-3 prose prose-sm max-w-none [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-4 [&_ol]:pl-4"
+                                dangerouslySetInnerHTML={{ __html: selectedField.description }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
 
               </div>
             )}
