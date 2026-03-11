@@ -304,7 +304,7 @@ export default function Home() {
                           key={`${selectedField.title}-${selectedImageIndex}`}
                           src={selectedField.images[selectedImageIndex]}
                           alt="Görsel"
-                          className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoading ? "opacity-0" : "opacity-100"}`}
+                          className={`w-full h-full object-contain transition-opacity duration-300 ${imageLoading ? "opacity-0" : "opacity-100"}`}
                           onLoad={() => setImageLoading(false)}
                         />
                       </div>
