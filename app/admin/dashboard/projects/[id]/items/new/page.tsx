@@ -5,6 +5,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/firebase";
 import { useRouter, useParams } from "next/navigation";
+import RichTextEditor from "@/app/components/RichTextEditor";
 
 interface FieldWithFiles {
   title: string;
@@ -20,6 +21,7 @@ export default function NewItem() {
     { title: "", description: "", imageFiles: [] },
   ]);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
   const handleAddField = () => {
@@ -37,13 +39,21 @@ export default function NewItem() {
     setFields(updated);
   };
 
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
   const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const selected = Array.from(e.target.files);
+    const oversized = selected.filter((f) => f.size > MAX_FILE_SIZE);
+    if (oversized.length > 0) {
+      alert(`${oversized.length} görsel 10MB sınırını aşıyor ve eklenmedi.`);
+    }
+    const valid = selected.filter((f) => f.size <= MAX_FILE_SIZE);
     const updated = [...fields];
-    const combined = [...updated[index].imageFiles, ...selected].slice(0, 10);
+    const combined = [...updated[index].imageFiles, ...valid].slice(0, 10);
     updated[index].imageFiles = combined;
     setFields(updated);
+    e.target.value = "";
   };
 
   const handleRemoveImage = (fieldIndex: number, imageIndex: number) => {
@@ -54,6 +64,7 @@ export default function NewItem() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading || submitted) return;
     setLoading(true);
     setError("");
 
@@ -80,7 +91,8 @@ export default function NewItem() {
         createdAt: serverTimestamp(),
       });
 
-      window.location.href = `/admin/dashboard/projects/${id}`;
+      setSubmitted(true);
+      router.replace(`/admin/dashboard/projects/${id}`);
     } catch (err) {
       console.error(err);
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
@@ -130,12 +142,10 @@ export default function NewItem() {
                 required
               />
 
-              <textarea
-                placeholder="Açıklama"
+              <RichTextEditor
                 value={field.description}
-                onChange={(e) => handleFieldChange(index, "description", e.target.value)}
-                className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-gray-400 transition-colors placeholder:text-gray-300 h-28 resize-none"
-                required
+                onChange={(val) => handleFieldChange(index, "description", val)}
+                placeholder="Açıklama"
               />
 
               <div className="flex flex-col gap-3">
@@ -181,24 +191,14 @@ export default function NewItem() {
             </div>
           ))}
 
-          {fields.length < 10 && (
-            <button
-              type="button"
-              onClick={handleAddField}
-              className="border border-dashed border-gray-200 text-gray-400 hover:border-gray-400 hover:text-gray-600 rounded-xl py-3 text-xs uppercase tracking-widest transition-colors"
-            >
-              + Yeni Alan Ekle
-            </button>
-          )}
-
           {error && <p className="text-red-400 text-xs">{error}</p>}
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || submitted}
             className="w-full py-3 text-xs font-semibold uppercase tracking-widest bg-black text-white rounded-xl hover:bg-gray-800 disabled:opacity-40 transition-colors"
           >
-            {loading ? "Kaydediliyor..." : "Kaydet"}
+            {submitted ? "Kaydedildi" : loading ? "Kaydediliyor..." : "Kaydet"}
           </button>
         </form>
       </div>

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd C:/Users/Digikey/my-app && npm install @tiptap/react @tiptap/starter-kit @tiptap/extension-color @tiptap/extension-text-style @tiptap/pm)",
+      "Bash(cd C:/Users/Digikey/my-app && node -e \"const m = require\\('@tiptap/extension-text-style'\\); console.log\\(Object.keys\\(m\\)\\)\")",
+      "Bash(cd C:/Users/Digikey/my-app && node -e \"const m = require\\('@tiptap/extension-color'\\); console.log\\(Object.keys\\(m\\)\\)\")"
+    ]
+  }
+}

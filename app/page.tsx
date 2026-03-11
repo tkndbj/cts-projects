@@ -106,6 +106,17 @@ export default function Home() {
 
     setFlatFields(flat);
     setItemsLoading(false);
+
+    if (flat.length > 0) {
+      setSelectedField(flat[0]);
+      setSelectedImageIndex(0);
+      setInfoCollapsed(false);
+      if (flat[0].images.length > 0) {
+        setImageLoading(true);
+      }
+      setTextVisible(false);
+      setTimeout(() => setTextVisible(true), 100);
+    }
   };
 
   const handleSelectField = (field: FlatField) => {
@@ -276,13 +287,13 @@ export default function Home() {
 
                 {/* Thumbnail strip - bottom left */}
                 {selectedField.images.length > 1 && (
-                  <div className="absolute bottom-6 left-6 flex gap-2 overflow-x-auto max-w-xs pb-1">
+                  <div className="absolute bottom-6 left-6 flex gap-2 max-w-xs overflow-hidden p-1">
                     {selectedField.images.map((url, index) => (
                       <button
                         key={index}
                         onClick={() => handleImageIndexChange(index)}
-                        className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                          selectedImageIndex === index ? "border-white scale-110" : "border-transparent opacity-70 hover:opacity-100"
+                        className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 ring-offset-1 transition-all ${
+                          selectedImageIndex === index ? "ring-white opacity-100" : "ring-transparent opacity-60 hover:opacity-100"
                         }`}
                       >
                         <img src={url} alt={`Görsel ${index + 1}`} className="w-full h-full object-cover" />
@@ -293,19 +304,20 @@ export default function Home() {
 
                 {/* Animated text overlay - bottom right */}
                 <div
-                  className="absolute bottom-6 right-6 max-w-sm font-[family-name:var(--font-montserrat)]"
+                  className="absolute bottom-6 right-6 max-w-md font-[family-name:var(--font-montserrat)]"
                   style={{
                     opacity: textVisible ? 1 : 0,
                     transform: textVisible ? "translateY(0)" : "translateY(16px)",
                     transition: "opacity 0.5s ease, transform 0.5s ease",
+                    maxHeight: "calc(100% - 48px)",
                   }}
                 >
-                  <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/40 overflow-hidden">
+                  <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/40 overflow-hidden flex flex-col" style={{ maxHeight: "calc(100vh - 120px)" }}>
                     <button
                       onClick={() => setInfoCollapsed((prev) => !prev)}
-                      className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-white/40 transition-colors duration-200"
+                      className="w-full flex items-center justify-between px-6 py-4 hover:bg-white/40 transition-colors duration-200 shrink-0"
                     >
-                      <h2 className="text-sm font-semibold tracking-wide text-gray-900">{selectedField.title}</h2>
+                      <h2 className="text-base font-semibold tracking-wide text-gray-900">{selectedField.title}</h2>
                       <svg
                         className="w-4 h-4 text-gray-400 shrink-0 ml-3 transition-transform duration-300"
                         style={{ transform: infoCollapsed ? "rotate(0deg)" : "rotate(180deg)" }}
@@ -318,14 +330,20 @@ export default function Home() {
                       </svg>
                     </button>
                     <div
-                      className="overflow-hidden transition-all duration-300 ease-in-out"
+                      className="transition-all duration-300 ease-in-out"
                       style={{
-                        maxHeight: infoCollapsed ? "0px" : "200px",
+                        display: "grid",
+                        gridTemplateRows: infoCollapsed ? "0fr" : "1fr",
                         opacity: infoCollapsed ? 0 : 1,
                       }}
                     >
-                      <div className="px-5 pb-4 border-t border-gray-200/40">
-                        <p className="text-gray-900 text-xs leading-relaxed pt-3">{selectedField.description}</p>
+                      <div className="overflow-hidden">
+                        <div className="px-6 pb-5 border-t border-gray-200/40 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
+                          <div
+                            className="text-gray-900 text-sm leading-relaxed pt-3 prose prose-sm max-w-none [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-4 [&_ol]:pl-4"
+                            dangerouslySetInnerHTML={{ __html: selectedField.description }}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

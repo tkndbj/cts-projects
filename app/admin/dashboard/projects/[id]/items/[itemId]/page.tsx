@@ -6,6 +6,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { db, storage } from "@/lib/firebase";
 import { useRouter, useParams } from "next/navigation";
 import { ProjectItem, ItemField } from "@/types";
+import RichTextEditor from "@/app/components/RichTextEditor";
 
 interface FieldWithFiles {
   title: string;
@@ -57,14 +58,21 @@ export default function EditItem() {
     setFields(updated);
   };
 
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
   const handleImageChange = (fieldIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const selected = Array.from(e.target.files);
+    const oversized = selected.filter((f) => f.size > MAX_FILE_SIZE);
+    if (oversized.length > 0) {
+      alert(`${oversized.length} görsel 10MB sınırını aşıyor ve eklenmedi.`);
+    }
+    const valid = selected.filter((f) => f.size <= MAX_FILE_SIZE);
     const updated = [...fields];
-    const total = updated[fieldIndex].existingImages.length + updated[fieldIndex].newImageFiles.length;
-    const combined = [...updated[fieldIndex].newImageFiles, ...selected].slice(0, 10 - updated[fieldIndex].existingImages.length);
+    const combined = [...updated[fieldIndex].newImageFiles, ...valid].slice(0, 10 - updated[fieldIndex].existingImages.length);
     updated[fieldIndex].newImageFiles = combined;
     setFields(updated);
+    e.target.value = "";
   };
 
   const handleRemoveExistingImage = async (fieldIndex: number, url: string) => {
@@ -172,12 +180,10 @@ export default function EditItem() {
                 required
               />
 
-              <textarea
-                placeholder="Açıklama"
+              <RichTextEditor
                 value={field.description}
-                onChange={(e) => handleFieldChange(index, "description", e.target.value)}
-                className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-gray-400 transition-colors placeholder:text-gray-300 h-28 resize-none"
-                required
+                onChange={(val) => handleFieldChange(index, "description", val)}
+                placeholder="Açıklama"
               />
 
               <div className="flex flex-col gap-3">
@@ -239,16 +245,6 @@ export default function EditItem() {
               </div>
             </div>
           ))}
-
-          {fields.length < 10 && (
-            <button
-              type="button"
-              onClick={handleAddField}
-              className="border border-dashed border-gray-200 text-gray-400 hover:border-gray-400 hover:text-gray-600 rounded-xl py-3 text-xs uppercase tracking-widest transition-colors"
-            >
-              + Yeni Alan Ekle
-            </button>
-          )}
 
           {error && <p className="text-red-400 text-xs">{error}</p>}
 
