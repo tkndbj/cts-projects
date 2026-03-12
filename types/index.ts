@@ -16,4 +16,5 @@ export interface Project {
     id: string;
     fields: ItemField[];
     createdAt: Date;
+    order?: number;
   }

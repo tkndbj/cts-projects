@@ -47,6 +47,7 @@ export default function Home() {
           id: doc.id,
           ...doc.data(),
         })) as ProjectItem[];
+        items.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
         const flat: FlatField[] = [];
         for (const item of items) {
           for (const field of item.fields || []) {
@@ -94,6 +95,7 @@ export default function Home() {
       id: doc.id,
       ...doc.data(),
     })) as ProjectItem[];
+    items.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
 
     const flat: FlatField[] = [];
     for (const item of items) {
