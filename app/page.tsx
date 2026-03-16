@@ -318,7 +318,7 @@ export default function Home() {
 
                     {/* Thumbnail strip - bottom left */}
                     {selectedField.images.length > 1 && (
-                      <div className="absolute bottom-6 left-6 flex gap-2 max-w-xs overflow-hidden p-1">
+                      <div className="absolute bottom-6 left-6 flex gap-2 max-w-[calc(100%-3rem)] overflow-x-auto p-1">
                         {selectedField.images.map((url, index) => (
                           <button
                             key={index}
@@ -335,7 +335,7 @@ export default function Home() {
 
                     {/* Animated text overlay - bottom right */}
                     <div
-                      className="absolute bottom-6 right-6 max-w-md font-[family-name:var(--font-montserrat)]"
+                      className="absolute bottom-6 right-6 font-[family-name:var(--font-montserrat)]"
                       style={{
                         opacity: textVisible ? 1 : 0,
                         transform: textVisible ? "translateY(0)" : "translateY(16px)",
@@ -343,38 +343,58 @@ export default function Home() {
                         maxHeight: "calc(100% - 48px)",
                       }}
                     >
-                      <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/40 overflow-hidden flex flex-col" style={{ maxHeight: "calc(100vh - 120px)" }}>
+                      {/* Collapsed: small icon button */}
+                      <button
+                        onClick={() => setInfoCollapsed(false)}
+                        className="bg-white/70 backdrop-blur-md rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/40 w-10 h-10 flex items-center justify-center hover:bg-white/90 transition-all duration-300 ease-in-out cursor-pointer"
+                        style={{
+                          position: "absolute",
+                          bottom: 0,
+                          right: 0,
+                          opacity: infoCollapsed ? 1 : 0,
+                          transform: infoCollapsed ? "scale(1)" : "scale(0.5)",
+                          pointerEvents: infoCollapsed ? "auto" : "none",
+                          transition: "opacity 0.3s ease, transform 0.3s ease",
+                        }}
+                      >
+                        <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+
+                      {/* Expanded: full description box */}
+                      <div
+                        className="bg-white/70 backdrop-blur-md rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/40 overflow-hidden flex flex-col max-w-md"
+                        style={{
+                          maxHeight: "calc(100vh - 120px)",
+                          opacity: infoCollapsed ? 0 : 1,
+                          transform: infoCollapsed ? "scale(0.3) translateX(40%) translateY(40%)" : "scale(1) translateX(0) translateY(0)",
+                          transformOrigin: "bottom right",
+                          pointerEvents: infoCollapsed ? "none" : "auto",
+                          transition: "opacity 0.3s ease, transform 0.3s ease",
+                        }}
+                      >
                         <button
-                          onClick={() => setInfoCollapsed((prev) => !prev)}
+                          onClick={() => setInfoCollapsed(true)}
                           className="w-full flex items-center justify-between px-6 py-4 hover:bg-white/40 transition-colors duration-200 shrink-0"
                         >
                           <h2 className="text-base font-semibold tracking-wide text-gray-900">{selectedField.title}</h2>
                           <svg
-                            className="w-4 h-4 text-gray-400 shrink-0 ml-3 transition-transform duration-300"
-                            style={{ transform: infoCollapsed ? "rotate(0deg)" : "rotate(180deg)" }}
+                            className="w-4 h-4 text-gray-400 shrink-0 ml-3"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
                             strokeWidth={2}
                           >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                           </svg>
                         </button>
-                        <div
-                          className="transition-all duration-300 ease-in-out"
-                          style={{
-                            display: "grid",
-                            gridTemplateRows: infoCollapsed ? "0fr" : "1fr",
-                            opacity: infoCollapsed ? 0 : 1,
-                          }}
-                        >
-                          <div className="overflow-hidden">
-                            <div className="px-6 pb-5 border-t border-gray-200/40 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
-                              <div
-                                className="text-gray-900 text-sm leading-relaxed pt-3 prose prose-sm max-w-none [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-4 [&_ol]:pl-4"
-                                dangerouslySetInnerHTML={{ __html: selectedField.description }}
-                              />
-                            </div>
+                        <div className="overflow-hidden">
+                          <div className="px-6 pb-5 border-t border-gray-200/40 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
+                            <div
+                              className="text-gray-900 text-sm leading-relaxed pt-3 prose prose-sm max-w-none [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-4 [&_ol]:pl-4"
+                              dangerouslySetInnerHTML={{ __html: selectedField.description }}
+                            />
                           </div>
                         </div>
                       </div>
